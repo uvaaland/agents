@@ -1,18 +1,17 @@
-language: node_js
-cache: pip
+matrix:
+  include:
+    - language: python
+      python: 3.7
+      script:
+        - python version
+        - python exhibit.py
 
-node_js:
-  - "10"
-
-python:
-  - "3.7"
-
-install:
-  - npm install -g reveal-md
-
-script:
-  - python exhibit.py
-  - reveal-md slides.md --theme night --static _static
+    - language: node_js
+      node_js: 10
+      install:
+        - npm install -g reveal-md
+      script:
+        - reveal-md slides.md --theme night --static _static
 
 after_success: |
   if [ -n "$GITHUB_API_KEY" ]; then
