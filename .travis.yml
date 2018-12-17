@@ -1,18 +1,20 @@
-matrix:
-  include:
-    - language: python
-      python: 3.7
-      dist: xenial
-      script:
-        - python version
-        - python exhibit.py
+language: node_js
+dist: xenial
 
-    - language: node_js
-      node_js: 10
-      install:
-        - npm install -g reveal-md
-      script:
-        - reveal-md slides.md --theme night --static _static
+node_js:
+  - "10"
+python:
+  - "3.7"
+
+install:
+  - npm install -g reveal-md
+
+before_script:
+  - python --version
+  - python exhibit.py
+
+script:
+  - reveal-md slides.md --theme night --static _static
 
 after_success: |
   if [ -n "$GITHUB_API_KEY" ]; then
