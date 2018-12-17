@@ -1,4 +1,2 @@
-*
-!gallery/
-!exhibit.py
-!.gitignore
+reveal.json
+slides.md
