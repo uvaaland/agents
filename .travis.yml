@@ -1,26 +1,20 @@
-language: node_js
-dist: xenial
+language: python
+cache: pip
 
-node_js:
-  - "10"
 python:
   - "3.7"
 
 install:
-  - npm install -g reveal-md
-
-before_script:
-  - python --version
-  - python exhibit.py
+  - git clone https://github.com/hakimel/reveal.js.git
 
 script:
-  - reveal-md slides.md --theme night --static _static
+  - python exhibit.py
 
 after_success: |
   if [ -n "$GITHUB_API_KEY" ]; then
   git checkout --orphan gh-pages
   git rm -rf --cached .
-  git add -f --ignore-errors gallery/ _static/
+  git add -f --ignore-errors gallery reveal.js
   git -c user.name='travis' -c user.email='travis' commit -m init
   git push -f -q https://$GITHUB_USER:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG gh-pages
   fi
