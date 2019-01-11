@@ -6,7 +6,9 @@ python:
   - "3.7"
 
 install:
-  - git clone https://github.com/hakimel/reveal.js.git
+  - wget https://github.com/hakimel/reveal.js/archive/master.zip
+  - unzip master.zip
+  - mv reveal.js-master reveal.js
 
 script:
   - python exhibit.py
