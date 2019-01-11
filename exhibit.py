@@ -1,46 +1,46 @@
 import glob
-import json
-
-
-def get_title():
-    with open("gallery/title", 'r') as tfile:
-        title = tfile.read().rstrip()
-
-    return title
+from random import shuffle
 
 
 def get_images():
-    return glob.glob("gallery/*.png")
+    images = glob.glob("gallery/*.png")
+    shuffle(images)
+    return images
 
 
-def create_slides():
+def format_html(images):
+    with open("reveal.js/index.html", 'r') as template:
+        lines = iter(template.readlines())
 
-    title = get_title()
+    stylesheet = "<link rel=\"stylesheet\" href=\"css/theme/night.css\">\n"
+    title = "<section><h1>Agents</h1></section>\n"
+    img = "<section><img src=\"../{}\" width=\"1200\" height=\"500\"></section>\n"
+
+    content = []
+    for line in lines:
+        if "<link rel=\"stylesheet\" href=\"css/theme/black.css\">" in line:
+            content.append(" "*4 + stylesheet)
+        elif "<section>Slide 1</section>" in line:
+            content.append(" "*8 + title)
+            for image in images:
+                content.append(" "*8 + img.format(image))
+            next(lines) # skip <section>Slide 2</section>
+        else:
+            content.append(line)
+
+    return content
+
+
+def write_html(content):
+    with open("reveal.js/index.html", 'w') as html:
+        for line in content:
+            html.write(line)
+
+
+if __name__ == '__main__':
+    
     images = get_images()
 
-    delimiter = "\n\n---\n"
+    content = format_html(images)
 
-    with open("slides.md", 'w') as slides:
-        slides.write(f"# {title}{delimiter}")
-
-        for image in images:
-            slides.write(f"![]({image}){delimiter}")
-
-
-def create_reveal_config_file():
-
-    config = {
-                'controls': False,
-                'progress': False,
-                'transition': 'fade'
-             }
-
-    config = json.dumps(config)
-
-    with open("reveal.json", 'w') as cfile:
-        cfile.write(config)
-
-
-if __name__ == "__main__":
-    create_slides()
-    create_reveal_config_file()
+    write_html(content)
